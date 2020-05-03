@@ -28,6 +28,23 @@ const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
     },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
+    textRoot: {
+        background: "white"
+    },
+    input: {
+        color: "black"
+    },
+    searchSize: {
+        width: 500,
+        '& > * + *': {
+            marginTop: theme.spacing(2),
+        },
+    },
+
     appBar: {
         transition: theme.transitions.create(['margin', 'width'], {
             easing: theme.transitions.easing.sharp,
@@ -65,10 +82,7 @@ const useStyles = makeStyles((theme) => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing(2),
-        display: 'flex',
-        overflow: 'auto',
-        flexDirection: 'column',
+        padding: theme.spacing(3),
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
