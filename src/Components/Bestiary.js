@@ -171,17 +171,7 @@ export const Bestiary = () => {
                                 //do pagination here
 
                                 let lastMonster = monsterData.slice(-1).pop()
-
-                                getDocID(lastMonster.monster.slug).then(x =>{
-                                        console.log("Ddd")
-                                        console.log(x)
-
-                                        // paginateData('monters')
-
-                                    }
-
-
-                                )
+                                console.log(   getDocID(lastMonster.monster.slug).then(x =>{c}))
                             }}
 
                             localization={{

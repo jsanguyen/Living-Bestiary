@@ -14,9 +14,6 @@ import 'firebase/firestore';
 //     measurementId: "YOURS"
 // };
 
-const firebaseConfig = {
-
-};
 
 
 // Initialize Firebase
@@ -51,8 +48,10 @@ export const getDocID = (doc) => {
             });
         })
         .catch(err => {
-            console.log(err);
+            return(err);
         });
+
+
 
 }
 
