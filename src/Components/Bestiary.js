@@ -32,8 +32,6 @@ export const Bestiary =() =>{
         'b1ddb449-3766-4cbb-82cc-eead6ae673452'
     );
 
-
-
     //Function that grabs from FB and punpms the data into state, where we can then use to display to user.
     const getMonsters =()=>{
 

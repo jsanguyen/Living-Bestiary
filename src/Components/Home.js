@@ -24,10 +24,15 @@ const useStyles = makeStyles( theme =>( {
     }
 }));
 
+/* For monster spotlight, we're just going to pull a random monster from FB, later ill create an array for n creatures and randomly from there. long, long term, I will use google analytics to pull pages from most searched/view creatures.
+ */
+
 const Home = () =>{
     const classes = useStyles();
     const [spacing, setSpacing] = useState(2);
+    const [monster, setMonster] = useState([])
 
+    /* Quick way for me to ingress data into FB. This should be a cloud function inside FB that runs daily. */
     // const ingress = () =>{
     //
     //     //make an API hit to get all monsters
@@ -79,9 +84,6 @@ const Home = () =>{
                     <Typography variant={"h6"}>Check out our monster spotlights down below, as well all creatures that have been cataloged from adventurers. </Typography>
                 </Grid>
                 <div><br/></div>
-                {/*<Button onClick={e =>{addSomething()}}>*/}
-                    {/*Click*/}
-                {/*</Button>*/}
             </Grid>
 
             <Grid container spacing={2}>
@@ -97,7 +99,7 @@ const Home = () =>{
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Button  target="_blank" href = 'https://ugpinc.freshdesk.com/support/tickets/new' size="small" color="primary">
+                                <Button  target="_blank" href = 'http://www.dnd5eapi.co/' size="small" color="primary">
                                     Click for More Info
                                 </Button>
                             </CardActions>

@@ -29,3 +29,18 @@ export const getData = (col) => {
             return snap.docs.map(doc => doc)
         })
 }
+
+export const getMonsterSpotlight = (col, info) =>{
+
+    return db.collection(col).doc(info)
+        .get().then(doc => {
+            if (!doc.exists) {
+                console.log('No document!');
+            } else {
+               return doc.data
+            }
+        })
+        .catch(err => {
+            console.log( err);
+        });
+}
