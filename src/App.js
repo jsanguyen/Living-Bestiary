@@ -87,7 +87,7 @@ function App() {
 
     const classes = useStyles();
     const theme = useTheme();
-    const [drawerOpen, setDrawerOpen] = React.useState(false);
+    const [drawerOpen, setDrawerOpen] = React.useState(true);
 
   return (
     <div className="App">
