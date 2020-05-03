@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import MaterialTable from "material-table";
-import {getData} from "../firebase";
+import {getData, getDocID, paginateData} from "../firebase";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -37,12 +37,10 @@ export const Bestiary = () => {
 
         // console.log(cacheValue.length)
 
-        console.log(cacheValue)
-
             getData("monsters").then(monsterList => {
                 monsterList = monsterList.map((monster) => {
                     const monsterData = monster.data()
-                    console.log(monsterData)
+                    // console.log(monsterData)
                     return (
                         {...monsterData}
                     )
@@ -164,8 +162,32 @@ export const Bestiary = () => {
                                     onClick: (event, rowData) => console.log("View More Info")
                                 }
                             ]}
+
                             options={{
                                 actionsColumnIndex: -1,
+                            }}
+
+                            onChangePage={e =>{
+                                //do pagination here
+
+                                let lastMonster = monsterData.slice(-1).pop()
+
+                                getDocID(lastMonster.monster.slug).then(x =>{
+                                        console.log("Ddd")
+                                        console.log(x)
+
+                                        // paginateData('monters')
+
+                                    }
+
+
+                                )
+                            }}
+
+                            localization={{
+                                pagination: {
+                                    nextTooltip: 'Next!',
+                                }
                             }}
                         />
                 </Grid>
