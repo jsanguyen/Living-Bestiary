@@ -6,7 +6,7 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
-import {db} from "../firebase";
+import {db, getDoc} from "../firebase";
 import axios from 'axios';
 
 const useStyles = makeStyles( theme =>( {
@@ -31,48 +31,63 @@ const Home = () =>{
     const classes = useStyles();
     const [spacing, setSpacing] = useState(2);
     const [monster, setMonster] = useState([])
+    const [value, setValue] = useState(0)
 
     /* Quick way for me to ingress data into FB. This should be a cloud function inside FB that runs daily. */
-    // const ingress = () =>{
-    //
-    //     //make an API hit to get all monsters
-    //
-    //     // const ingress = monsterIngress
-    //     //
-    //     // console.log(ingress)
-    //
-    //     axios.get('https://cors-anywhere.herokuapp.com/https://api.open5e.com/monsters/?format=json&limit=1086', {
-    //         headers: {
-    //             'Access-Control-Allow-Origin': '*'
-    //         }})
-    //         .then(function (response) {
-    //             // handle success
-    //
-    //             let monsterArray = response
-    //
-    //             console.log(monsterArray.data)
-    //             console.log(monsterArray.data.results)
-    //
-    //             monsterArray.data.results.map(monster =>{
-    //
-    //                 console.log(monster.slug)
-    //
-    //                 db.collection("monsters").doc(monster.slug).set({
-    //                     monster
-    //                 })
-    //                     .then(function() {
-    //                         console.log("Creature added!");
-    //                     })
-    //                     .catch(function(error) {
-    //                         console.error("Error writing document: ", error);
-    //                     });
-    //             })
-    //         })
-    //         .catch(function (error) {
-    //             // handle error
-    //             console.log(error);
-    //         })
-    // }
+    const ingress = () =>{
+
+        //make an API hit to get all monsters
+
+        // const ingress = monsterIngress
+        //
+        // console.log(ingress)
+
+        axios.get('https://cors-anywhere.herokuapp.com/https://api.open5e.com/monsters/?format=json&limit=1086', {
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            }})
+            .then(function (response) {
+                // handle success
+
+                let monsterArray = response
+
+
+                console.log(monsterArray.data)
+                console.log(monsterArray.data.results)
+
+                monsterArray.data.results.map(monster =>{
+
+                    // db.collection("monsters").doc().set({
+                    //     monster
+                    // })
+                    //     .then(function() {
+                    //         console.log("Creature added!");
+                    //     })
+                    //     .catch(function(error) {
+                    //         console.error("Error writing document: ", error);
+                    //     });
+                })
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+    }
+
+    console.log(value)
+
+    function getRandomCreature() {
+
+        getDoc('monsterCollectionInfo', 'collectioninfo').then(collection =>{
+            let collectionSize = collection.size
+            console.log(collection.size)
+
+            let randomCreature = Math.floor((Math.random() * collectionSize) + 1)
+            console.log(randomCreature)
+
+        })
+
+    }
 
     return (
 
@@ -101,7 +116,12 @@ const Home = () =>{
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button  target="_blank" href = 'http://www.dnd5eapi.co/' size="small" color="primary">
+                                        <Button size="small" color="primary"
+                                                 onClick ={e => {
+                                                     getRandomCreature()
+                                                 }
+                                                 }
+                                        >
                                             Access
                                         </Button>
                                     </CardActions>
@@ -119,13 +139,12 @@ const Home = () =>{
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button  target="_blank" href = 'http://www.dnd5eapi.co/' size="small" color="primary">
+                                        <Button  size="small" color="primary" onClick ={e =>{ingress()}}>
                                             Access
                                         </Button>
                                     </CardActions>
                                 </Card>
                             </Grid>
-
 
                                 <Grid key={"dndresources"} item>
                                     <Card className={classes.card}>
