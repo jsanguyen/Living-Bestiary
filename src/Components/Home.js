@@ -6,7 +6,7 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
-import {db} from "../firebase";
+import {db, getDoc} from "../firebase";
 import axios from 'axios';
 
 const useStyles = makeStyles( theme =>( {
@@ -31,82 +31,142 @@ const Home = () =>{
     const classes = useStyles();
     const [spacing, setSpacing] = useState(2);
     const [monster, setMonster] = useState([])
+    const [value, setValue] = useState(0)
 
     /* Quick way for me to ingress data into FB. This should be a cloud function inside FB that runs daily. */
-    // const ingress = () =>{
-    //
-    //     //make an API hit to get all monsters
-    //
-    //     // const ingress = monsterIngress
-    //     //
-    //     // console.log(ingress)
-    //
-    //     axios.get('https://cors-anywhere.herokuapp.com/https://api.open5e.com/monsters/?format=json&limit=1086', {
-    //         headers: {
-    //             'Access-Control-Allow-Origin': '*'
-    //         }})
-    //         .then(function (response) {
-    //             // handle success
-    //
-    //             let monsterArray = response
-    //
-    //             console.log(monsterArray.data)
-    //             console.log(monsterArray.data.results)
-    //
-    //             monsterArray.data.results.map(monster =>{
-    //
-    //                 console.log(monster.slug)
-    //
-    //                 db.collection("monsters").doc(monster.slug).set({
-    //                     monster
-    //                 })
-    //                     .then(function() {
-    //                         console.log("Creature added!");
-    //                     })
-    //                     .catch(function(error) {
-    //                         console.error("Error writing document: ", error);
-    //                     });
-    //             })
-    //         })
-    //         .catch(function (error) {
-    //             // handle error
-    //             console.log(error);
-    //         })
-    // }
+    const ingress = () =>{
+
+        //make an API hit to get all monsters
+
+        // const ingress = monsterIngress
+        //
+        // console.log(ingress)
+
+        axios.get('https://cors-anywhere.herokuapp.com/https://api.open5e.com/monsters/?format=json&limit=1086', {
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            }})
+            .then(function (response) {
+                // handle success
+
+                let monsterArray = response
+
+
+                console.log(monsterArray.data)
+                console.log(monsterArray.data.results)
+
+                monsterArray.data.results.map(monster =>{
+
+                    // db.collection("monsters").doc().set({
+                    //     monster
+                    // })
+                    //     .then(function() {
+                    //         console.log("Creature added!");
+                    //     })
+                    //     .catch(function(error) {
+                    //         console.error("Error writing document: ", error);
+                    //     });
+                })
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+    }
+
+    console.log(value)
+
+    function getRandomCreature() {
+
+        getDoc('monsterCollectionInfo', 'collectioninfo').then(collection =>{
+            let collectionSize = collection.size
+            console.log(collection.size)
+
+            let randomCreature = Math.floor((Math.random() * collectionSize) + 1)
+            console.log(randomCreature)
+
+        })
+
+    }
 
     return (
-        <Grid container spacing={2}>
+
+        <Grid container className={classes.root} spacing={2}>
             <Grid item xs={12}>
                 <div><br/></div>
                 <Grid container direction="column" justify="space-evenly" alignItems="center">
+                    <Typography variant={"h5"}>
+                        Welcome to Living Bestiary! Use this site as a resource for Creatures.
+                    </Typography>
                     <div><br/></div>
-                    <Typography variant={"h5"}>Welcome to Our Living Bestiary.</Typography>
-                    <Typography variant={"h6"}>Check out our monster spotlights down below, as well all creatures that have been cataloged from adventurers. </Typography>
                 </Grid>
-                <div><br/></div>
             </Grid>
 
-            <Grid container spacing={2}>
-                <Grid container justify="center" spacing={spacing}>
-                    <Grid key={"WLTPortal"} item>
-                        <Card className={classes.card}>
-                            <CardContent>
-                                <Typography gutterBottom variant="h5" component="h2">
-                                    Creature Name
-                                </Typography>
-                                <Typography variant="body2" color="textSecondary" component="p">
-                                   Description
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button  target="_blank" href = 'http://www.dnd5eapi.co/' size="small" color="primary">
-                                    Click for More Info
-                                </Button>
-                            </CardActions>
-                        </Card>
+
+                    <Grid container className={classes.root} spacing={2}>
+                        <Grid container justify="center" spacing={spacing}>
+                            <Grid key={"random"} item>
+                                <Card className={classes.card}>
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="h2">
+                                            Random Creature Spotlight
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary" component="p">
+                                            Click Below to See a Random Creature's Data
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button size="small" color="primary"
+                                                 onClick ={e => {
+                                                     getRandomCreature()
+                                                 }
+                                                 }
+                                        >
+                                            Access
+                                        </Button>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
+
+                            <Grid key={"spotlight"} item>
+                                <Card className={classes.card}>
+                                    <CardContent>
+                                        <Typography gutterBottom variant="h5" component="h2">
+                                            Creature Spotlight
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary" component="p">
+                                            Creature Spotlight
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button  size="small" color="primary" onClick ={e =>{ingress()}}>
+                                            Access
+                                        </Button>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
+
+                                <Grid key={"dndresources"} item>
+                                    <Card className={classes.card}>
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h6" component="h2">
+                                                Dnd Rsources
+                                            </Typography>
+                                            <Typography variant="body2" color="textSecondary" component="p">
+                                                Click Below to Access Some DnD Resources
+                                            </Typography>
+                                        </CardContent>
+                                        <CardActions>
+                                            <Button target="_blank"
+                                                    href='http://www.dnd5eapi.co/'
+                                                    size="small" color="primary">
+                                                Access
+                                            </Button>
+                                        </CardActions>
+                                    </Card>
+                                </Grid>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Grid>
         </Grid>
     );
 }
