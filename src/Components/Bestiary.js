@@ -15,7 +15,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Collapse from "../Menu/Nav";
+import _ from "lodash"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -151,18 +151,103 @@ export const Bestiary = () => {
         }
     });
 
-    const returnSkills =(skills) => Object.keys(skills).map(key =>
+    function getAdditionalinfo(currentCreature){
 
-        <Typography >
-            {key}:
-        </Typography>
+        if (currentCreature === undefined || currentCreature.length === 0){
+            return null
+        } else{
+            return(
+                <>
+                    <Dialog
+                        fullWidth={true}
+                        maxWidth={"md"}
+                        open={moreInfo}
+                        onClose={e =>{setMoreInfo(false)}}
+                        aria-labelledby="max-width-dialog-title"
+                    >
+                        <DialogTitle id="max-width-dialog-title">Creature Info</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                <Typography align="center">
+                                    Additional Information
+                                </Typography>
 
+                            </DialogContentText>
 
-        // <option key={key} value={key}>{skills[key]}</option>
-    )
+                            <ExpansionPanel>
+                                <ExpansionPanelSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
+                                    <Typography className={classes.heading}>Actions</Typography>
+                                </ExpansionPanelSummary>
 
+                                {currentCreature.actions === undefined ?
 
-    console.log(currentCreature.actions)
+                                    <>
+                                        <ExpansionPanelDetails>
+                                            <Typography >
+                                                {currentCreature.name} does not have any actions (That we know of so far).
+                                            </Typography>
+                                        </ExpansionPanelDetails>
+                                    </> : <>
+
+                                        {currentCreature.actions.map((action) => {
+
+                                            return(
+                                                <ExpansionPanelDetails>
+                                                    <Typography >
+                                                        {action.name}: {action.desc}
+                                                    </Typography>
+                                                </ExpansionPanelDetails>)
+                                        })}
+                                    </>
+                                }
+                            </ExpansionPanel>
+
+                            <ExpansionPanel>
+                                <ExpansionPanelSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
+                                    <Typography className={classes.heading}>Skill Checks</Typography>
+                                </ExpansionPanelSummary>
+                                <>{ _.isEmpty(currentCreature.skills) === true ?
+                                    <>
+                                        <ExpansionPanelDetails>
+                                            <Typography >
+                                                {currentCreature.name} does not have any S\skills (That we know of so far).
+                                            </Typography>
+                                        </ExpansionPanelDetails>
+                                    </>: <>
+
+                                        {Object.entries(currentCreature.skills).map(([key, value]) => {
+                                            //Since it's an object we'll have to map it differently.
+                                            if (_.isEmpty(currentCreature.skills) === false){
+                                                return (
+                                                    <ExpansionPanelDetails>
+                                                        <Typography>{" "} {key}: {value}</Typography>
+                                                    </ExpansionPanelDetails>)
+                                            }
+                                        })}
+                                        </>
+                                }
+                                </>
+                            </ExpansionPanel>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={e =>{setMoreInfo(false)}} color="primary">
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+
+                </>
+            )
+        }
+    }
 
     return (
 
@@ -209,95 +294,8 @@ export const Bestiary = () => {
                         />
                 </Grid>
             </Grid>
-            <>
-                <Dialog
-                    fullWidth={true}
-                    maxWidth={"md"}
-                    open={moreInfo}
-                    onClose={e =>{setMoreInfo(false)}}
-                    aria-labelledby="max-width-dialog-title"
-                >
-                    <DialogTitle id="max-width-dialog-title">Creature Info</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            <Typography align="center">
-                                Additional Information
-                            </Typography>
 
-                        </DialogContentText>
-
-                        <ExpansionPanel>
-                            <ExpansionPanelSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
-                            >
-                                <Typography className={classes.heading}>Actions</Typography>
-                            </ExpansionPanelSummary>
-
-                            {currentCreature.actions === undefined ?
-
-                                <>
-                                    <ExpansionPanelDetails>
-                                        <Typography >
-                                            {currentCreature.name} does not have any actions (That we know of so far).
-                                        </Typography>
-                                    </ExpansionPanelDetails>
-                                </> : <>
-
-                                {currentCreature.actions.map((action) => {
-
-                                    return(
-                                        <ExpansionPanelDetails>
-                                            <Typography >
-                                                {action.name}: {action.desc}
-                                            </Typography>
-                                        </ExpansionPanelDetails>)
-                                })}
-                                </>
-                            }
-                        </ExpansionPanel>
-
-                        <ExpansionPanel>
-                            <ExpansionPanelSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
-                            >
-                                <Typography className={classes.heading}>Skill Checks</Typography>
-                            </ExpansionPanelSummary>
-                            {currentCreature.actions === undefined ?
-
-                                <>
-                                    <ExpansionPanelDetails>
-                                        <Typography >
-                                            {currentCreature.name} does not have any skills (That we know of so far).
-                                        </Typography>
-                                    </ExpansionPanelDetails>
-                                </> :
-                                <>
-
-                                    {Object.entries(currentCreature.skills).map(([key, value]) => {
-                                        //Since it's an object we'll have to map it differently.
-                                        return (
-                                            <ExpansionPanelDetails>
-                                            <Typography>{" "} {key}: {value} </Typography>
-                                            </ExpansionPanelDetails>
-
-                                        )
-                                    })}
-
-                                </>
-                            }
-                        </ExpansionPanel>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={e =>{setMoreInfo(false)}} color="primary">
-                            Close
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-                </>
+            <>{getAdditionalinfo(currentCreature)}</>
 
         </Grid>
     )
