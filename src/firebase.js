@@ -3,16 +3,9 @@ import * as firebase from 'firebase/app';
 // Add the Firebase products that you want to use
 import 'firebase/firestore';
 
-// const firebaseConfig = {
-//     apiKey: "YOURS",
-//     authDomain: "YOURS",
-//     databaseURL: "YOURS",
-//     projectId: "YOURS",
-//     storageBucket: "YOURS",
-//     messagingSenderId: "YOURS",
-//     appId: "YOURS",
-//     measurementId: "YOURS"
-// };
+const firebaseConfig = {
+
+};
 
 
 
@@ -26,7 +19,7 @@ export const getData = (col) => {
 
     console.log("Doing work")
 
-    return db.collection(col).limit(10)
+    return db.collection(col)
         .get().then(snap => {
             return snap.docs.map(doc => doc)
         })
