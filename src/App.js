@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -9,19 +9,12 @@ import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import { BrowserRouter as Router} from "react-router-dom";
 import {ChevronLeft, ChevronRight, Menu} from "@material-ui/icons";
 import {Routes} from "./Routes/Routes";
 import NavLink from "./Menu/Nav";
 import _ from "lodash"
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 
 const drawerWidth = 200;
 
@@ -103,71 +96,86 @@ function App() {
     const classes = useStyles();
     const theme = useTheme();
     const [drawerOpen, setDrawerOpen] = React.useState(false);
+    const anchorRef = React.useRef(null);
+    const [size, setSize] = useState([0, 0]);
 
-  return (
-    <div className="App">
-        <div className={classes.root}>
-            <CssBaseline />
-            <AppBar
-                position="fixed"
-                className={clsx(classes.appBar, {
-                    [classes.appBarShift]: drawerOpen,
-                })}
-                style={{ background: '#842210' }}
-            >
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={e =>{setDrawerOpen(true)}}
-                        edge="start"
-                        className={clsx(classes.menuButton, drawerOpen && classes.hide)}
-                    >
-                        <Menu/>
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
-            <Router>
-                <Drawer
-                    className={classes.drawer}
-                    variant="persistent"
-                    anchor="left"
-                    open={drawerOpen}
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                >
-                    <div className={classes.toolbar} />
-                    <IconButton onClick={e=>{setDrawerOpen(false)}}>
-                        <Typography>Hide </Typography>
-                        {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
-                    </IconButton>
-                    <Divider />
+    useEffect(() => {
 
-                    <NavLink/>
-                </Drawer>
-                <main
-                    className={clsx(classes.content, {
-                        [classes.contentShift]: drawerOpen,
+        //We should return an else statement letting the user know something went sideways
+
+        // console.log("DOING WORK")
+
+        function updateSize() {
+            setSize([window.innerWidth, window.innerHeight]);
+        }
+        window.addEventListener('resize', updateSize);
+        updateSize();
+        return () => window.removeEventListener('resize', updateSize);
+
+    }, [])
+
+    return (
+
+        <>
+
+            <div className={classes.root}>
+
+                <CssBaseline/>
+
+                <AppBar
+                    position="fixed"
+                    className={clsx(classes.appBar, {
+                        [classes.appBarShift]: drawerOpen,
                     })}
+                    style={{ background: '#842210' }}
                 >
-                    <div className={classes.drawerHeader}/>
+                    <Toolbar>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={e =>{setDrawerOpen(true)}}
+                            edge="start"
+                            className={clsx(classes.menuButton, drawerOpen && classes.hide)}
+                        >
+                            <Menu/>
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
 
-                    {Routes()}
-                </main>
-            </Router>
 
-            <main
-                className={clsx(classes.content, {
-                    [classes.contentShift]: drawerOpen,
-                })}
-            >
-                <div className={classes.drawerHeader} />
+                    <Router>
+                        <Drawer
+                            className={classes.drawer}
+                            variant="persistent"
+                            anchor="left"
+                            open={drawerOpen}
+                            classes={{
+                                paper: classes.drawerPaper,
+                            }}
+                        >
+                            <div className={classes.toolbar} />
+                            <IconButton onClick={e=>{setDrawerOpen(false)}}>
+                                <Typography>Hide</Typography>
+                                {theme.direction === 'ltr' ? <ChevronLeft /> : <ChevronRight />}
+                            </IconButton>
+                            <Divider />
 
-            </main>
-        </div>
-    </div>
-  );
+                            <NavLink/>
+                        </Drawer>
+                        <main
+                            className={clsx(classes.content, {
+                                [classes.contentShift]: drawerOpen,
+                            })}
+                        >
+                            <div className={classes.drawerHeader}/>
+
+                            {Routes()}
+                        </main>
+                    </Router>
+            </div>
+        </>
+
+    );
 }
 
 export default App;

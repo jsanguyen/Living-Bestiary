@@ -16,38 +16,18 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import _ from "lodash"
-
-
-const useStyles = makeStyles((theme) => ({
-    expand:{
-        width: '100%'
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        margin: 'auto',
-        width: 'fit-content',
-    },
-    formControl: {
-        marginTop: theme.spacing(2),
-        minWidth: 120,
-    },
-    formControlLabel: {
-        marginTop: theme.spacing(1),
-    },
-    heading: {
-        fontSize: theme.typography.pxToRem(15),
-        fontWeight: theme.typography.fontWeightRegular,
-    }
-}));
+import {useStyles} from "./FormStyles";
+import Paper from "@material-ui/core/Paper";
+import Divider from "@material-ui/core/Divider";
 
 export const Bestiary = () => {
-    const classes = useStyles();
+    const classes = useStyles('110');
 
     const [monsterData, setMonsterData] = useState([])
     const [loading, setloading] = useState(true)
     const [moreInfo, setMoreInfo] = useState(false)
     const [currentCreature, setCurrentCreautre] = useState([])
+    const [extraInfoArray, setExtraInfoArray] = useState()
 
     //Function that grabs from FB and punpms the data into state, where we can then use to display to user.
     //This is just a stop gap to get the project running. I need to paginate to min/max reads from FB.
@@ -75,6 +55,19 @@ export const Bestiary = () => {
     useEffect(() => {
         getMonsters()
     }, [])
+
+    useEffect(() => {
+
+        setExtraInfoArray({
+            "Hit Points": currentCreature.hit_points,
+            "Armor Class": currentCreature.armor_class,
+            "Armor Description": currentCreature.armor_desc,
+            "Hit Dice": currentCreature.hit_dice,
+            "Type": currentCreature.type,
+            "Subtype": currentCreature.subtype,
+        })
+
+    }, [currentCreature])
 
     const columns = [
         {
@@ -151,6 +144,9 @@ export const Bestiary = () => {
         }
     });
 
+    console.log(currentCreature)
+    console.log(extraInfoArray)
+
     function getAdditionalinfo(currentCreature){
 
         if (currentCreature === undefined || currentCreature.length === 0){
@@ -163,15 +159,29 @@ export const Bestiary = () => {
                         maxWidth={"md"}
                         open={moreInfo}
                         onClose={e =>{setMoreInfo(false)}}
-                        aria-labelledby="max-width-dialog-title"
                     >
-                        <DialogTitle id="max-width-dialog-title">Creature Info</DialogTitle>
+                        <DialogTitle>Additional Information</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-                                <Typography align="center">
-                                    Additional Information
-                                </Typography>
 
+                                <Typography>
+
+                                    <Grid >
+                                        <Grid container direction="row" spacing={1}>
+
+                                            {Object.entries(extraInfoArray).map(([key, value]) => {
+                                                //Since it's an object we'll have to map it differently.
+                                                if (_.isEmpty(extraInfoArray) === false){
+                                                    return (
+                                                        <Grid item xs={3}>
+                                                            <Typography>{" "} {key}<Divider/> {value}</Typography>
+                                                        </Grid>
+                                                    )
+                                                }
+                                            })}
+                                        </Grid>
+                                    </Grid>
+                                </Typography>
                             </DialogContentText>
 
                             <ExpansionPanel>
@@ -218,7 +228,7 @@ export const Bestiary = () => {
                                     <>
                                         <ExpansionPanelDetails>
                                             <Typography >
-                                                {currentCreature.name} does not have any S\skills (That we know of so far).
+                                                {currentCreature.name} does not have any skills (That we know of so far).
                                             </Typography>
                                         </ExpansionPanelDetails>
                                     </>: <>
@@ -250,19 +260,10 @@ export const Bestiary = () => {
     }
 
     return (
-
-        <Grid container  spacing={2}>
-            <Grid item xs={12}>
-                <div><br/></div>
-                <Grid container direction="column" justify="space-evenly" alignItems="center">
-                    <div><br/></div>
-                    <Typography variant={"h6"}>Use this table to check out creatures that have already been
-                        identified.</Typography>
-                </Grid>
-                <div><br/></div>
-            </Grid>
-            <Grid container  spacing={2}>
-                <Grid container justify="center" spacing={2}>
+                <Grid container
+                      direction="column"
+                      justify="space-evenly"
+                      alignItems="center">
                         <MaterialTable
                             title={`Bestiary`}
                             columns={columns}
@@ -292,11 +293,7 @@ export const Bestiary = () => {
                                 }
                             }}
                         />
+                    <>{getAdditionalinfo(currentCreature)}</>
                 </Grid>
-            </Grid>
-
-            <>{getAdditionalinfo(currentCreature)}</>
-
-        </Grid>
     )
 }
