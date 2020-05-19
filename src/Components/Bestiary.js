@@ -163,9 +163,6 @@ export const Bestiary = () => {
                         <DialogTitle>Additional Information</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-
-                                <Typography>
-
                                     <Grid >
                                         <Grid container direction="row" spacing={1}>
 
@@ -181,7 +178,6 @@ export const Bestiary = () => {
                                             })}
                                         </Grid>
                                     </Grid>
-                                </Typography>
                             </DialogContentText>
 
                             <ExpansionPanel>

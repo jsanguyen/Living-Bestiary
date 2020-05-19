@@ -6,7 +6,7 @@ import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from '@material-ui/core/styles';
-import {db, getDoc} from "../firebase";
+import {db, getDoc, getRandomDoc} from "../firebase";
 import axios from 'axios';
 
 const useStyles = makeStyles( theme =>( {
@@ -30,7 +30,7 @@ const useStyles = makeStyles( theme =>( {
 const Home = () =>{
     const classes = useStyles();
     const [spacing, setSpacing] = useState(2);
-    const [monster, setMonster] = useState([])
+    const [monster, setMonster] = useState('')
     const [value, setValue] = useState(0)
 
     /* Quick way for me to ingress data into FB. This should be a cloud function inside FB that runs daily. */
@@ -74,20 +74,7 @@ const Home = () =>{
             })
     }
 
-    console.log(value)
-
-    function getRandomCreature() {
-
-        getDoc('monsterCollectionInfo', 'collectioninfo').then(collection =>{
-            let collectionSize = collection.size
-            console.log(collection.size)
-
-            let randomCreature = Math.floor((Math.random() * collectionSize) + 1)
-            console.log(randomCreature)
-
-        })
-
-    }
+ console.log(monster)
 
     return (
 
@@ -118,9 +105,8 @@ const Home = () =>{
                                     <CardActions>
                                         <Button size="small" color="primary"
                                                  onClick ={e => {
-                                                     getRandomCreature()
-                                                 }
-                                                 }
+                                                     getRandomDoc().then(x =>{setMonster(x)})
+                                                 }}
                                         >
                                             Access
                                         </Button>

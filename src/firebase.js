@@ -1,5 +1,5 @@
 import * as firebase from 'firebase/app';
-
+import _ from 'lodash'
 // Add the Firebase products that you want to use
 import 'firebase/firestore';
 
@@ -13,8 +13,6 @@ const firebaseConfig = {
     appId: "1:701445157334:web:62519179dcff8a6011b477",
     measurementId: "G-R5T1YLE3PB"
 };
-
-
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -50,15 +48,25 @@ export const getDocID = (doc) => {
         .catch(err => {
             return(err);
         });
-
-
-
 }
 
+export function getRandomDoc(){
+
+    const key = db.collection('monsters').doc().id;
+
+    return db.collection('monsters').where(firebase.firestore.FieldPath.documentId(), '>=', key).limit(1).get()
+
+        .then(snap => {
+
+            return _.map(snap.docs, doc => {
+
+                return (doc.data())
+            })
+
+        })
+}
 
 export const paginateData = (col, doc) =>{
-
-
 
     let docRef = db.collection(col).doc(doc);
 
@@ -72,20 +80,4 @@ export const paginateData = (col, doc) =>{
         });
     });
 
-}
-
-export const getDoc = (col, info) =>{
-
-    return db.collection(col).doc(info)
-        .get().then(doc => {
-            if (!doc.exists) {
-                console.log('No document!');
-            } else {
-                console.log( doc)
-               return doc.data
-            }
-        })
-        .catch(err => {
-            console.log( err);
-        });
 }
